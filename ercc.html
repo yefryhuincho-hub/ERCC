@@ -1,0 +1,1081 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Observatorio de la Estrategia Regional de Cambio Climático - Huancavelica 2050</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        swiss: {
+                            red: '#E30613',
+                            light: '#FFF5F5',
+                        },
+                        gore: {
+                            crimson: '#FF1A4B',
+                            dark: '#8C0B26',
+                        },
+                        andes: {
+                            blue: '#0F4C5C',
+                            teal: '#1D70B8',
+                            green: '#10B981',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #FF1A4B;
+            border-radius: 4px;
+        }
+        .province-path {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .province-path:hover {
+            stroke: #ffffff !important;
+            stroke-width: 3.5px !important;
+            filter: drop-shadow(0 0 8px rgba(255, 26, 75, 0.6));
+        }
+        .tab-content {
+            transition: opacity 0.25s ease-in-out;
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col antialiased selection:bg-gore-crimson selection:text-white">
+
+    <header class="bg-slate-900/90 border-b border-slate-800 sticky top-0 z-50 backdrop-blur-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex flex-col md:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+                <div class="p-2.5 bg-gore-crimson/10 rounded-xl border border-gore-crimson/20 text-gore-crimson">
+                    <i data-lucide="globe" class="w-8 h-8 animate-pulse"></i>
+                </div>
+                <div>
+                    <h1 class="text-base md:text-lg font-black tracking-tight text-white flex flex-wrap items-center gap-2">
+                        OBSERVATORIO DE LA ERCC 2050
+                        <span class="text-[9px] font-bold px-2 py-0.5 bg-swiss-red text-white rounded-md tracking-wider">HORIZONTE 2050</span>
+                    </h1>
+                    <p class="text-[10px] md:text-[11px] text-slate-400 font-semibold tracking-wide uppercase">Estrategia Regional de Cambio Climático de Huancavelica</p>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-4 bg-slate-950/80 p-2 rounded-xl border border-slate-800">
+                <img src="logo.png" alt="Instituciones Aliadas - COSUDE, Helvetas, Avina, GORE" class="h-10 md:h-12 object-contain opacity-95 hover:opacity-100 transition-opacity" 
+                     onerror="this.src='https://placehold.co/600x80/0f172a/ffffff?text=Andes+Resilientes+|+COSUDE+|+Helvetas+|+Avina+|+GORE+Huancavelica'">
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col gap-6">
+        
+        <div class="grid grid-cols-2 md:flex md:flex-wrap bg-slate-900 p-1.5 rounded-xl border border-slate-800 gap-1">
+            <button onclick="switchTab('resumen')" id="tab-resumen" class="px-4 py-2.5 text-[11px] md:text-xs font-bold uppercase rounded-lg transition-all flex items-center justify-center md:justify-start gap-2 text-white bg-gore-crimson shadow-lg">
+                <i data-lucide="layout-grid" class="w-4 h-4"></i> Vista General
+            </button>
+            <button onclick="switchTab('riesgos')" id="tab-riesgos" class="px-4 py-2.5 text-[11px] md:text-xs font-bold uppercase rounded-lg transition-all flex items-center justify-center md:justify-start gap-2 text-slate-400 hover:text-white hover:bg-slate-800">
+                <i data-lucide="map" class="w-4 h-4"></i> Diagnóstico & Riesgos
+            </button>
+            <button onclick="switchTab('gei')" id="tab-gei" class="px-4 py-2.5 text-[11px] md:text-xs font-bold uppercase rounded-lg transition-all flex items-center justify-center md:justify-start gap-2 text-slate-400 hover:text-white hover:bg-slate-800">
+                <i data-lucide="activity" class="w-4 h-4"></i> Inventario GEI & Mitigación
+            </button>
+            <button onclick="switchTab('plan')" id="tab-plan" class="px-4 py-2.5 text-[11px] md:text-xs font-bold uppercase rounded-lg transition-all flex items-center justify-center md:justify-start gap-2 text-slate-400 hover:text-white hover:bg-slate-800">
+                <i data-lucide="database" class="w-4 h-4"></i> Plan de Acción 2030
+            </button>
+            <button onclick="switchTab('gobernan')" id="tab-gobernan" class="px-4 py-2.5 text-[11px] md:text-xs font-bold uppercase rounded-lg transition-all flex items-center justify-center md:justify-start gap-2 text-slate-400 hover:text-white hover:bg-slate-800">
+                <i data-lucide="users" class="w-4 h-4"></i> Gobernanza, Género & Juventudes
+            </button>
+        </div>
+
+        <!-- ============================================== -->
+        <!-- PESTAÑA 1: VISTA GENERAL (DASHBOARD)           -->
+        <!-- ============================================== -->
+        <section id="content-resumen" class="tab-content space-y-6">
+            <div class="bg-gradient-to-r from-slate-900 via-slate-900 to-indigo-950 border border-slate-800 rounded-2xl p-6 relative overflow-hidden shadow-2xl">
+                <div class="absolute right-0 top-0 opacity-5 pointer-events-none transform translate-x-8 -translate-y-8">
+                    <i data-lucide="trees" class="w-96 h-96"></i>
+                </div>
+                <div class="max-w-4xl relative z-10">
+                    <span class="bg-swiss-red text-white text-[10px] font-extrabold uppercase tracking-widest px-3 py-1 rounded-md">Horizonte Estratégico 2050</span>
+                    <h2 class="text-2xl md:text-3xl font-extrabold mt-3 tracking-tight text-white">Transición hacia un Paisaje Andino Resiliente y Bajo en Carbono</h2>
+                    <p class="text-sm text-slate-300 mt-2 leading-relaxed">
+                        La Estrategia Regional de Cambio Climático (ERCC) de Huancavelica al 2050 articula el planeamiento territorial con los compromisos globales del Acuerdo de París.<sup>1</sup> Mediante la implementación sistemática de <strong>44 medidas de adaptación</strong> y <strong>13 de mitigación</strong>, la región busca salvaguardar sus ecosistemas vulnerables, su agrobiodiversidad nativa y la seguridad hídrica regional ante proyecciones de incremento de temperatura.<sup>1,2,3</sup>
+                    </p>
+                    <div class="mt-4 flex flex-wrap gap-2 text-xs">
+                        <span class="bg-slate-800 border border-slate-700 px-3 py-1.5 rounded-lg flex items-center gap-1.5 text-slate-300">
+                            <i data-lucide="calendar" class="w-3.5 h-3.5 text-gore-crimson"></i> Actualización de Datos: Junio 2026
+                        </span>
+                        <span class="bg-slate-800 border border-slate-700 px-3 py-1.5 rounded-lg flex items-center gap-1.5 text-slate-300">
+                            <i data-lucide="heart" class="w-3.5 h-3.5 text-pink-500"></i> COREMUCC Incorporado<sup>4</sup>
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="bg-slate-900 p-5 rounded-2xl border border-slate-800 shadow-sm flex flex-col justify-between">
+                    <div>
+                        <span class="text-[10px] font-bold text-slate-400 block tracking-wider uppercase">Inventario GEI Regional¹</span>
+                        <h4 class="text-2xl font-black text-white mt-1">1,841.86 <span class="text-xs text-slate-400 font-medium">GgCO₂eq</span></h4>
+                    </div>
+                    <p class="text-xs text-slate-400 mt-3 leading-relaxed">El sector Agricultura representa el <strong>59.3%</strong> del flujo de emisiones regionales, seguido por UTCUTS.¹</p>
+                </div>
+                <div class="bg-slate-900 p-5 rounded-2xl border border-slate-800 shadow-sm flex flex-col justify-between">
+                    <div>
+                        <span class="text-[10px] font-bold text-slate-400 block tracking-wider uppercase">Brecha de Irrigación³</span>
+                        <h4 class="text-2xl font-black text-white mt-1">92.6% <span class="text-xs font-semibold px-2 py-0.5 bg-amber-950 text-amber-300 rounded border border-amber-800">Secano</span></h4>
+                    </div>
+                    <p class="text-xs text-slate-400 mt-3 leading-relaxed">Unidades agrícolas dependientes exclusivamente de precipitaciones estacionales.¹</p>
+                </div>
+                <div class="bg-slate-900 p-5 rounded-2xl border border-slate-800 shadow-sm flex flex-col justify-between">
+                    <div>
+                        <span class="text-[10px] font-bold text-slate-400 block tracking-wider uppercase">Hotspot de Siniestros (2023-2024)²</span>
+                        <h4 class="text-2xl font-black text-white mt-1">3,549 <span class="text-xs text-slate-400 font-medium">Casos</span></h4>
+                    </div>
+                    <p class="text-xs text-slate-400 mt-3 leading-relaxed">Las inundaciones y flujos representaron el <strong>48.8%</strong> del total de emergencias.²</p>
+                </div>
+                <div class="bg-slate-900 p-5 rounded-2xl border border-slate-800 shadow-sm flex flex-col justify-between">
+                    <div>
+                        <span class="text-[10px] font-bold text-slate-400 block tracking-wider uppercase">Pérdida Ecosistémica Acumulada¹</span>
+                        <h4 class="text-2xl font-black text-white mt-1">96,454 <span class="text-xs text-slate-400 font-medium">Hectáreas</span></h4>
+                    </div>
+                    <p class="text-xs text-slate-400 mt-3 leading-relaxed">Áreas de pajonales y bofedales con degradación física severa e incendios.¹</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div class="bg-slate-900 p-6 rounded-2xl border border-slate-800 flex flex-col justify-between">
+                    <div>
+                        <h3 class="text-base font-bold text-white flex items-center gap-2">
+                            <i data-lucide="scale" class="w-5 h-5 text-gore-crimson"></i> Balanza Regional de Captura & Emisión (2021)¹
+                        </h3>
+                        <p class="text-xs text-slate-400 mt-1">Comparación del balance neto de carbono antropogénico frente a cobertura de sumideros forestales.</p>
+                        
+                        <div class="mt-6 space-y-4">
+                            <div>
+                                <div class="flex justify-between text-xs mb-1">
+                                    <span class="text-slate-300">Emisión Total del Sector Agropecuario (CH₄ / N₂O)¹</span>
+                                    <span class="text-rose-500 font-mono font-bold">1,091.87 GgCO₂eq</span>
+                                </div>
+                                <div class="w-full bg-slate-850 rounded-full h-3 overflow-hidden">
+                                    <div class="bg-rose-500 h-3 rounded-full" style="width: 59.3%;"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between text-xs mb-1">
+                                    <span class="text-slate-300">Pérdida por Cambio de Uso de Suelo (UTCUTS)¹</span>
+                                    <span class="text-amber-500 font-mono font-bold">634.54 GgCO₂eq</span>
+                                </div>
+                                <div class="w-full bg-slate-850 rounded-full h-3 overflow-hidden">
+                                    <div class="bg-amber-500 h-3 rounded-full" style="width: 34.4%;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="p-4 bg-slate-950 border border-slate-880 rounded-xl mt-6">
+                        <h4 class="text-xs font-bold text-emerald-400 flex items-center gap-1.5 uppercase">
+                            <i data-lucide="trees" class="w-4 h-4"></i> El Ecosistema de Puna como Sumidero Crítico¹
+                        </h4>
+                        <p class="text-xs text-slate-300 mt-1.5 leading-relaxed">
+                            Aproximadamente el <strong>62%</strong> del territorio andino de Huancavelica está cubierto por pajonales de puna húmeda y bofedales, los cuales actúan como reservorios naturales de carbono subterráneo. Evitar la degradación a través del manejo ganadero controlado reduce la erosión física y mantiene el equilibrio de la biomasa.¹
+                        </p>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900 p-6 rounded-2xl border border-slate-800 flex flex-col justify-between">
+                    <div>
+                        <h3 class="text-base font-bold text-white flex items-center gap-2">
+                            <i data-lucide="git-fork" class="w-5 h-5 text-gore-crimson"></i> Matriz Metodológica de Riesgos (IPCC AR5)³
+                        </h3>
+                        <p class="text-xs text-slate-400 mt-1">Sistematización interactiva de la cadena de impacto para la toma de decisiones basada en peligros prioritarios. Seleccione cada sección para analizar.</p>
+                        
+                        <div class="mt-4 space-y-3">
+                            <div class="flex gap-3 items-start p-3 rounded-xl hover:bg-slate-850 transition-all border border-transparent hover:border-slate-800 cursor-pointer" onclick="showOverviewImpact('peligro')">
+                                <span class="p-2 bg-red-950/50 text-red-400 rounded-lg mt-0.5 border border-red-900/30"><i data-lucide="flame" class="w-4 h-4"></i></span>
+                                <div>
+                                    <h4 class="text-xs font-bold text-white uppercase tracking-wider">Peligro Físico (Forzante Climático)</h4>
+                                    <p class="text-xs text-slate-400 mt-0.5">Temperaturas extremas absolutas de −11.5 °C e incursiones de masas de aire seco (DANAs).²</p>
+                                </div>
+                            </div>
+                            <div class="flex gap-3 items-start p-3 rounded-xl hover:bg-slate-850 transition-all border border-transparent hover:border-slate-800 cursor-pointer" onclick="showOverviewImpact('exposicion')">
+                                <span class="p-2 bg-amber-950/50 text-amber-400 rounded-lg mt-0.5 border border-amber-900/30"><i data-lucide="home" class="w-4 h-4"></i></span>
+                                <div>
+                                    <h4 class="text-xs font-bold text-white uppercase tracking-wider">Exposición del Sujeto de Análisis</h4>
+                                    <p class="text-xs text-slate-400 mt-0.5">Cultivos tradicionales de subsistencia y cabezas de ganado alpaquero en zonas de ladera andina.¹</p>
+                                </div>
+                            </div>
+                            <div class="flex gap-3 items-start p-3 rounded-xl hover:bg-slate-850 transition-all border border-transparent hover:border-slate-800 cursor-pointer" onclick="showOverviewImpact('vulnerabilidad')">
+                                <span class="p-2 bg-blue-950/50 text-blue-400 rounded-lg mt-0.5 border border-blue-900/30"><i data-lucide="activity" class="w-4 h-4"></i></span>
+                                <div>
+                                    <h4 class="text-xs font-bold text-white uppercase tracking-wider">Sensibilidad & Capacidad Adaptativa</h4>
+                                    <p class="text-xs text-slate-400 mt-0.5">Alto índice de pobreza monetaria, limitados canales de riego y analfabetismo rural femenino.³,⁵</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="overview-impact-box" class="p-4 bg-slate-950 text-slate-300 rounded-xl text-xs mt-4 border border-slate-800 min-h-[75px]">
+                        <p class="font-bold text-white flex items-center gap-1.5"><i data-lucide="info" class="w-4 h-4 text-gore-crimson"></i> Análisis Integrado</p>
+                        <p class="mt-1 text-slate-400">Selecciona uno de los factores de la cadena para desplegar el análisis técnico detallado formulado en la ERCC 2050.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================== -->
+        <!-- PESTAÑA 2: DIAGNÓSTICO TERRITORIAL & RIESGOS    -->
+        <!-- ============================================== -->
+        <section id="content-riesgos" class="tab-content hidden space-y-6">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                <!-- Columna Izquierda: Mapa e interruptores -->
+                <div class="lg:col-span-5 bg-slate-900 p-6 rounded-2xl border border-slate-800 flex flex-col gap-4">
+                    <div>
+                        <h3 class="text-base font-bold text-white flex items-center gap-2">
+                            <i data-lucide="map" class="w-5 h-5 text-gore-crimson"></i> Vulnerabilidad Distrital & Provincial
+                        </h3>
+                        <p class="text-xs text-slate-400 mt-1">Selecciona un Peligro Climático para mapear el nivel de riesgo proyectado al horizonte 2050.</p>
+                    </div>
+
+                    <!-- Selector de Peligro para coloreado del mapa -->
+                    <div class="grid grid-cols-2 gap-2">
+                        <button onclick="setMapDanger('sequias')" id="btn-danger-sequias" class="py-2.5 px-3 text-left text-xs font-bold rounded-xl border border-slate-700 bg-slate-950 hover:bg-slate-850 flex items-center gap-2 transition-all">
+                            <span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span> Sequías
+                        </button>
+                        <button onclick="setMapDanger('heladas')" id="btn-danger-heladas" class="py-2.5 px-3 text-left text-xs font-bold rounded-xl border border-slate-700 bg-slate-950 hover:bg-slate-850 flex items-center gap-2 transition-all">
+                            <span class="w-2.5 h-2.5 rounded-full bg-blue-500"></span> Heladas / Frío
+                        </button>
+                        <button onclick="setMapDanger('inundaciones')" id="btn-danger-inundaciones" class="py-2.5 px-3 text-left text-xs font-bold rounded-xl border border-slate-700 bg-slate-950 hover:bg-slate-850 flex items-center gap-2 transition-all">
+                            <span class="w-2.5 h-2.5 rounded-full bg-cyan-500"></span> Inundaciones
+                        </button>
+                        <button onclick="setMapDanger('movimientos')" id="btn-danger-movimientos" class="py-2.5 px-3 text-left text-xs font-bold rounded-xl border border-slate-700 bg-slate-950 hover:bg-slate-850 flex items-center gap-2 transition-all">
+                            <span class="w-2.5 h-2.5 rounded-full bg-red-500"></span> Mov. en masa
+                        </button>
+                    </div>
+
+                    <!-- Leyenda del Riesgo del Mapa -->
+                    <div class="flex items-center justify-between text-[10px] uppercase font-bold text-slate-400 bg-slate-950 p-2.5 rounded-lg border border-slate-800">
+                        <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-emerald-400"></span> Bajo</span>
+                        <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-amber-400"></span> Medio</span>
+                        <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-orange-500"></span> Alto</span>
+                        <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-red-500"></span> Muy Alto</span>
+                    </div>
+
+                    <div class="flex justify-center bg-slate-950 border border-slate-800 p-4 rounded-xl">
+                        <svg viewBox="0 0 450 500" class="w-full max-w-[320px] h-auto drop-shadow-md">
+                            <!-- Tayacaja (Norte) -->
+                            <path id="svg-tayacaja" d="M 180 30 L 280 40 L 330 90 L 340 160 L 270 170 L 230 140 L 225 180 L 170 160 Z" fill="#475569" stroke="#0F172A" stroke-width="2" class="province-path" onclick="selectProvince('Tayacaja')"/>
+                            <text x="240" y="80" fill="#FFFFFF" font-size="10" font-weight="900" pointer-events="none" class="opacity-80">TAYACAJA</text>
+
+                            <!-- Churcampa (Este-Norte) -->
+                            <path id="svg-churcampa" d="M 270 170 L 340 160 L 360 210 L 330 250 L 270 230 Z" fill="#475569" stroke="#0F172A" stroke-width="2" class="province-path" onclick="selectProvince('Churcampa')"/>
+                            <text x="290" y="200" fill="#FFFFFF" font-size="9" font-weight="900" pointer-events="none" class="opacity-80">CHURCAMPA</text>
+
+                            <!-- Huancavelica (Centro) -->
+                            <path id="svg-huancavelica" d="M 120 170 L 170 160 L 225 180 L 230 140 L 270 170 L 270 230 L 280 270 L 210 290 L 195 240 L 130 240 Z" fill="#475569" stroke="#0F172A" stroke-width="2" class="province-path" onclick="selectProvince('Huancavelica')"/>
+                            <text x="160" y="215" fill="#FFFFFF" font-size="10" font-weight="900" pointer-events="none" class="opacity-80">HUANCAVELICA</text>
+
+                            <!-- Acobamba (Este-Centro) -->
+                            <path id="svg-acobamba" d="M 270 230 L 330 250 L 350 290 L 290 310 L 280 270 Z" fill="#475569" stroke="#0F172A" stroke-width="2" class="province-path" onclick="selectProvince('Acobamba')"/>
+                            <text x="285" y="275" fill="#FFFFFF" font-size="9" font-weight="900" pointer-events="none" class="opacity-80">ACOBAMBA</text>
+
+                            <!-- Angaraes (Este-Sur) -->
+                            <path id="svg-angaraes" d="M 210 290 L 280 270 L 290 310 L 350 290 L 350 360 L 290 380 L 240 330 Z" fill="#475569" stroke="#0F172A" stroke-width="2" class="province-path" onclick="selectProvince('Angaraes')"/>
+                            <text x="260" y="335" fill="#FFFFFF" font-size="10" font-weight="900" pointer-events="none" class="opacity-80">ANGARAES</text>
+
+                            <!-- Castrovirreyna (Oeste) -->
+                            <path id="svg-castrovirreyna" d="M 120 170 L 130 240 L 195 240 L 210 290 L 240 330 L 180 340 L 155 300 L 90 300 L 60 270 L 70 220 Z" fill="#475569" stroke="#0F172A" stroke-width="2" class="province-path" onclick="selectProvince('Castrovirreyna')"/>
+                            <text x="90" y="260" fill="#FFFFFF" font-size="9" font-weight="900" pointer-events="none" class="opacity-80">CASTROVIRREYNA</text>
+
+                            <!-- Huaytará (Sur) -->
+                            <path id="svg-huaytara" d="M 90 300 L 155 300 L 180 340 L 240 330 L 290 380 L 280 440 L 210 460 L 160 410 L 120 405 Z" fill="#475569" stroke="#0F172A" stroke-width="2" class="province-path" onclick="selectProvince('Huaytará')"/>
+                            <text x="150" y="390" fill="#FFFFFF" font-size="10" font-weight="900" pointer-events="none" class="opacity-80">HUAYTARÁ</text>
+                        </svg>
+                    </div>
+                </div>
+
+                <!-- Columna Derecha: Reporte detallado -->
+                <div class="lg:col-span-7 space-y-4">
+                    <div class="bg-slate-900 p-6 rounded-2xl border border-slate-800">
+                        <div class="flex flex-wrap items-center justify-between border-b border-slate-800 pb-3.5 gap-2">
+                            <div>
+                                <h3 id="panel-prov-name" class="text-xl font-extrabold text-white flex items-center gap-2">Huancavelica</h3>
+                                <p class="text-xs text-slate-400 font-semibold uppercase">Diagnóstico Físico & Socioeconómico Regional</p>
+                            </div>
+                            <span id="panel-pop-badge" class="bg-slate-950 border border-slate-800 text-slate-300 text-xs font-bold px-3 py-1 rounded-lg">Población: 115,054 hab¹</span>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+                            <div class="space-y-4">
+                                <div>
+                                    <span class="text-[10px] text-slate-450 font-bold uppercase tracking-wider block">Superficie Agrícola & Brecha Hídrica³</span>
+                                    <div class="flex justify-between items-baseline mt-1">
+                                        <p id="panel-riego-text" class="text-sm md:text-base font-extrabold text-slate-200">98.8% sin riego (Secano)</p>
+                                        <span id="panel-sup-text" class="text-xs text-slate-400">Área: 50,054 Has</span>
+                                    </div>
+                                    <div class="w-full bg-slate-950 rounded-full h-2 overflow-hidden mt-1.5 border border-slate-800">
+                                        <div id="panel-riego-bar" class="bg-amber-500 h-2 rounded-full" style="width: 98.8%;"></div>
+                                    </div>
+                                    <p class="text-[11px] text-slate-400 leading-normal mt-1">La vulnerabilidad agrícola se agrava ante anomalías negativas en precipitaciones otoñales.¹</p>
+                                </div>
+
+                                <div class="bg-slate-950 border border-slate-850 p-3.5 rounded-xl">
+                                    <h4 class="text-xs font-bold text-slate-300 flex items-center gap-1.5 uppercase">
+                                        <i data-lucide="cloud-lightning" class="text-amber-500 w-4.5 h-4.5"></i> Incidencia de Emergencias (2023-2024)²
+                                    </h4>
+                                    <p id="panel-emerg-desc" class="text-xs text-slate-450 leading-relaxed mt-1">Hotspot crítico por recurrentes heladas en zonas altas.</p>
+                                    
+                                    <div class="grid grid-cols-3 gap-2 mt-3 text-center border-t border-slate-800 pt-3">
+                                        <div>
+                                            <span class="text-[9px] text-slate-450 block uppercase font-bold">Lluvias</span>
+                                            <span id="panel-emerg-lluvias" class="text-xs font-extrabold text-slate-200">42.1%</span>
+                                        </div>
+                                        <div>
+                                            <span class="text-[9px] text-slate-450 block uppercase font-bold">Heladas</span>
+                                            <span id="panel-emerg-heladas" class="text-xs font-extrabold text-slate-200">22.5%</span>
+                                        </div>
+                                        <div>
+                                            <span class="text-[9px] text-slate-450 block uppercase font-bold">Vientos</span>
+                                            <span id="panel-emerg-vientos" class="text-xs font-extrabold text-slate-200">8.4%</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Escenarios Climáticos al 2050 -->
+                            <div class="space-y-4">
+                                <span class="text-[10px] text-slate-450 font-bold uppercase tracking-wider block">Escenarios de Proyección al 2050 (SSP5-8.5)¹</span>
+                                
+                                <div class="grid grid-cols-3 gap-2">
+                                    <div class="p-3 bg-red-950/20 border border-red-900/30 rounded-xl text-center">
+                                        <span class="text-[8px] md:text-[9px] text-red-400 font-bold uppercase block tracking-wider">T. Máxima</span>
+                                        <p id="panel-scen-tmax" class="text-[11px] md:text-xs font-extrabold text-red-500 mt-1">+3.2 a +3.4 °C</p>
+                                        <span class="text-[8px] text-red-400/70 leading-none mt-0.5 block">Anual</span>
+                                    </div>
+                                    <div class="p-3 bg-blue-950/20 border border-blue-900/30 rounded-xl text-center">
+                                        <span class="text-[8px] md:text-[9px] text-blue-400 font-bold uppercase block tracking-wider">P. Invierno</span>
+                                        <p id="panel-scen-prec-inv" class="text-[11px] md:text-xs font-extrabold text-blue-500 mt-1">+60%</p>
+                                        <span class="text-[8px] text-blue-400/70 leading-none mt-0.5 block">Precipitación</span>
+                                    </div>
+                                    <div class="p-3 bg-amber-950/20 border border-amber-900/30 rounded-xl text-center">
+                                        <span class="text-[8px] md:text-[9px] text-amber-400 font-bold uppercase block tracking-wider">P. Otoño</span>
+                                        <p id="panel-scen-prec-oto" class="text-[11px] md:text-xs font-extrabold text-amber-500 mt-1">-30%</p>
+                                        <span class="text-[8px] text-amber-400/70 leading-none mt-0.5 block">Déficit</span>
+                                    </div>
+                                </div>
+
+                                <div class="p-3.5 bg-rose-950/20 border border-rose-900/40 rounded-xl text-xs">
+                                    <h5 class="font-bold text-rose-400 flex items-center gap-1"><i data-lucide="shield-alert" class="w-4 h-4"></i> Diagnóstico de Riesgos Priorizados</h5>
+                                    <p id="panel-risks-desc" class="text-slate-350 leading-relaxed mt-1">Afectación de la actividad agropecuaria por heladas meteorológicas intensas en áreas de puna seca.¹</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================== -->
+        <!-- PESTAÑA 3: INVENTARIO DE GEI & MITIGACIÓN       -->
+        <!-- ============================================== -->
+        <section id="content-gei" class="tab-content hidden space-y-6">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                <!-- Gráficos de emisiones -->
+                <div class="lg:col-span-8 bg-slate-900 p-6 rounded-2xl border border-slate-800 space-y-6">
+                    <div>
+                        <h3 class="text-base font-bold text-white flex items-center gap-2">
+                            <i data-lucide="bar-chart-3" class="w-5 h-5 text-gore-crimson"></i> Inventario de Gases de Efecto Invernadero (Año Base 2021)¹
+                        </h3>
+                        <p class="text-xs text-slate-400 mt-1">Estimaciones oficiales expresadas en Gigagramas de dióxido de carbono equivalente ($GgCO_2eq$).¹</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-slate-800">
+                        <div class="h-64 flex flex-col justify-between">
+                            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block text-center mb-2">Distribución Sectorial (GgCO₂eq)¹</span>
+                            <div class="flex-grow relative h-48">
+                                <canvas id="chart-gei-sectoral-adv"></canvas>
+                            </div>
+                        </div>
+                        <div class="h-64 flex flex-col justify-between">
+                            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block text-center mb-2">Sub-fuentes del Sector Agricultura¹</span>
+                            <div class="flex-grow relative h-48">
+                                <canvas id="chart-gei-ag-adv"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Simulador de trayectoria de carbono -->
+                <div class="lg:col-span-4 bg-slate-900 p-6 rounded-2xl border border-slate-800 flex flex-col justify-between">
+                    <div class="space-y-4">
+                        <h3 class="text-base font-bold text-white flex items-center gap-2">
+                            <i data-lucide="sliders" class="w-5 h-5 text-gore-crimson"></i> Simulador de Mitigación al 2050
+                        </h3>
+                        <p class="text-xs text-slate-400">Modifica el nivel de implementación de las medidas de mitigación para simular la reducción de emisiones.³</p>
+                        
+                        <div class="space-y-4 pt-4 border-t border-slate-800">
+                            <div>
+                                <label class="flex justify-between text-xs text-slate-300 font-semibold mb-1">
+                                    <span>Manejo de Pastos (AGRI1)³</span>
+                                    <span id="slider-val-agri" class="text-emerald-400 font-mono font-bold">0%</span>
+                                </label>
+                                <input type="range" id="slider-agri" min="0" max="100" value="0" oninput="updateMitigationSimulator()" class="w-full accent-gore-crimson bg-slate-950 h-1.5 rounded-lg appearance-none cursor-pointer border border-slate-800">
+                            </div>
+                            
+                            <div>
+                                <label class="flex justify-between text-xs text-slate-300 font-semibold mb-1">
+                                    <span>Plantas Compostaje (DES2)³</span>
+                                    <span id="slider-val-des" class="text-emerald-400 font-mono font-bold">0%</span>
+                                </label>
+                                <input type="range" id="slider-des" min="0" max="100" value="0" oninput="updateMitigationSimulator()" class="w-full accent-gore-crimson bg-slate-950 h-1.5 rounded-lg appearance-none cursor-pointer border border-slate-800">
+                            </div>
+
+                            <div>
+                                <label class="flex justify-between text-xs text-slate-300 font-semibold mb-1">
+                                    <span>Plantaciones Nativas (UTCUTS7)¹</span>
+                                    <span id="slider-val-utcuts" class="text-emerald-400 font-mono font-bold">0%</span>
+                                </label>
+                                <input type="range" id="slider-utcuts" min="0" max="100" value="0" oninput="updateMitigationSimulator()" class="w-full accent-gore-crimson bg-slate-950 h-1.5 rounded-lg appearance-none cursor-pointer border border-slate-800">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 p-4 bg-slate-950 border border-slate-850 rounded-xl space-y-2">
+                        <span class="text-[9px] font-bold text-slate-450 uppercase block tracking-wider">Brecha de Carbono Proyectada</span>
+                        <div class="flex justify-between items-baseline">
+                            <h4 id="sim-emissions-text" class="text-lg md:text-xl font-black text-white">1,841.86 <span class="text-xs text-slate-400 font-medium">GgCO₂eq</span></h4>
+                            <span id="sim-neutral-tag" class="text-[9px] font-extrabold uppercase px-2 py-0.5 bg-rose-500/10 text-rose-400 rounded-md border border-rose-500/20">Emisor Neto</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================== -->
+        <!-- PESTAÑA 4: PLAN DE ACCIÓN (BUSCADOR DE MEDIDAS) -->
+        <!-- ============================================== -->
+        <section id="content-plan" class="tab-content hidden space-y-6">
+            <div class="bg-slate-900 p-6 rounded-2xl border border-slate-800">
+                <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 border-b border-slate-800 pb-4">
+                    <div>
+                        <h3 class="text-base font-bold text-white flex items-center gap-2">
+                            <i data-lucide="search" class="w-5 h-5 text-gore-crimson"></i> Catálogo y Buscador del Plan de Acción
+                        </h3>
+                        <p class="text-xs text-slate-400 mt-0.5">Explora de manera detallada las 44 medidas de adaptación y 13 de mitigación de la ERCC.<sup>1,3</sup></p>
+                    </div>
+
+                    <!-- Panel de Filtrado -->
+                    <div class="flex flex-wrap gap-2 w-full lg:w-auto">
+                        <select id="filter-tact-type" onchange="runCatalogFilter()" class="bg-slate-950 border border-slate-800 text-slate-300 text-xs font-bold rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gore-crimson">
+                            <option value="all">Tipo: Todos</option>
+                            <option value="Adaptación">Adaptación</option>
+                            <option value="Mitigación">Mitigación</option>
+                        </select>
+                        <select id="filter-tact-sector" onchange="runCatalogFilter()" class="bg-slate-950 border border-slate-800 text-slate-300 text-xs font-bold rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gore-crimson">
+                            <option value="all">Área Temática: Todas</option>
+                            <option value="Agricultura">Agricultura</option>
+                            <option value="Agua">Agua / Recursos Hídricos</option>
+                            <option value="Bosques">Bosques y Ecosistemas</option>
+                            <option value="Salud">Salud</option>
+                            <option value="Desechos">Desechos</option>
+                            <option value="Energía">Energía</option>
+                            <option value="UTCUTS">UTCUTS</option>
+                        </select>
+                        <input type="text" id="search-tact-text" onkeyup="runCatalogFilter()" placeholder="Buscar código o descripción..." class="bg-slate-950 border border-slate-800 text-slate-300 text-xs rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-gore-crimson flex-grow lg:flex-grow-0">
+                    </div>
+                </div>
+
+                <!-- Lista de Medidas -->
+                <div class="overflow-x-auto mt-6 custom-scrollbar">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="border-b border-slate-800 text-[10px] font-bold text-slate-450 uppercase tracking-wider">
+                                <th class="py-3 px-3">Código</th>
+                                <th class="py-3 px-4">Tipo</th>
+                                <th class="py-3 px-4">Área Temática</th>
+                                <th class="py-3 px-4">Definición Estratégica de la Medida</th>
+                                <th class="py-3 px-4 text-right">Ficha</th>
+                            </tr>
+                        </thead>
+                        <tbody id="catalog-measures-body" class="text-xs divide-y divide-slate-850 text-slate-300">
+                            <!-- Inserción dinámica mediante JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- MODAL: FICHA TÉCNICA DE LA MEDIDA -->
+        <div id="measure-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+            <div class="bg-slate-900 rounded-2xl max-w-2xl w-full border border-slate-800 overflow-hidden shadow-2xl flex flex-col justify-between text-slate-200">
+                <div class="p-6 bg-slate-950 text-white flex justify-between items-start gap-4 border-b border-slate-850">
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <span id="modal-type-badge" class="px-2.5 py-0.5 rounded-md text-[10px] font-bold bg-gore-crimson text-white">Adaptación</span>
+                            <span id="modal-sector-text" class="text-xs text-slate-450 font-bold uppercase tracking-wider">Agricultura</span>
+                        </div>
+                        <h3 id="modal-code-title" class="text-lg font-black mt-2 text-white">AGRI1</h3>
+                    </div>
+                    <button onclick="closeMeasureModal()" class="text-slate-400 hover:text-white transition-colors">
+                        <i data-lucide="x" class="w-5 h-5"></i>
+                    </button>
+                </div>
+
+                <div class="p-6 space-y-4 text-xs leading-relaxed max-h-[380px] overflow-y-auto custom-scrollbar text-slate-300">
+                    <div>
+                        <h4 class="font-bold text-white uppercase tracking-wide">Descripción Estratégica</h4>
+                        <p id="modal-desc-text" class="text-slate-400 mt-1">Sistematización de la medida.</p>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-white uppercase tracking-wide">Condiciones Habilitantes</h4>
+                        <p id="modal-cond-text" class="text-slate-400 mt-1">Requerimientos de implementación.</p>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-white uppercase tracking-wide">Meta al 2030 / 2050</h4>
+                        <p id="modal-meta-text" class="text-slate-400 mt-1">Objetivos de avance físico programados.</p>
+                    </div>
+                </div>
+
+                <div class="p-4 bg-slate-950 border-t border-slate-850 flex justify-end">
+                    <button onclick="closeMeasureModal()" class="px-5 py-2 bg-gore-crimson text-white rounded-xl font-bold hover:bg-gore-crimson/90 transition-colors">Cerrar Ficha</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================== -->
+        <!-- PESTAÑA 5: GOBERNANZA, GÉNERO & JUVENTUDES      -->
+        <!-- ============================================== -->
+        <section id="content-gobernan" class="tab-content hidden space-y-6">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                <!-- Columna Izquierda: Aporte de COREMUCC y Ecos -->
+                <div class="lg:col-span-8 bg-slate-900 p-6 rounded-2xl border border-slate-800 space-y-4">
+                    <div class="flex flex-col md:flex-row md:items-center justify-between border-b border-slate-800 pb-4 gap-4">
+                        <div>
+                            <h3 class="text-base font-bold text-white flex items-center gap-2">
+                                <i data-lucide="heart" class="w-5 h-5 text-pink-500"></i> Transversalización de Género e Inclusión Intergeneracional
+                            </h3>
+                            <p class="text-xs text-slate-400 mt-1">Seguimiento analítico e inclusión de los enfoques de género, interculturalidad e intergeneracional.<sup>4</sup></p>
+                        </div>
+                        <span class="bg-pink-950/40 text-pink-400 border border-pink-900/30 text-[10px] font-bold px-3 py-1 rounded-full flex items-center gap-1.5 self-start uppercase">
+                            <i data-lucide="award" class="w-3.5 h-3.5"></i> Enfoques Transversales Incorporados
+                        </span>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div class="p-4 bg-slate-950 rounded-xl border border-slate-850 hover:border-pink-900/40 transition-all">
+                            <div class="flex flex-col sm:flex-row justify-between items-start gap-4">
+                                <div>
+                                    <span class="bg-pink-950/40 text-pink-400 text-[9px] font-bold px-2 py-0.5 rounded uppercase border border-pink-900/20">Recursos Hídricos / Agua (AGU2)</span>
+                                    <h4 class="text-sm font-extrabold text-white mt-1">Gestión Comunitaria de Infraestructura Natural</h4>
+                                    <p class="text-xs text-slate-400 mt-1">Iniciativas para la conservación y recuperación de fuentes naturales de agua potable lideradas por el COREMUCC para mitigar sequías altoandinas.<sup>4</sup></p>
+                                </div>
+                                <div class="text-left sm:text-right shrink-0">
+                                    <span class="text-[9px] text-slate-500 font-bold block uppercase leading-none">Meta al 2030</span>
+                                    <span class="text-sm font-extrabold text-pink-500">20% de Iniciativas</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="p-4 bg-slate-950 rounded-xl border border-slate-850 hover:border-pink-900/40 transition-all">
+                            <div class="flex flex-col sm:flex-row justify-between items-start gap-4">
+                                <div>
+                                    <span class="bg-pink-950/40 text-pink-400 text-[9px] font-bold px-2 py-0.5 rounded uppercase border border-pink-900/20">Agricultura Familiar (AGRI10)</span>
+                                    <h4 class="text-sm font-extrabold text-white mt-1">Revaloración de Semillas Nativas en Comunidades</h4>
+                                    <p class="text-xs text-slate-400 mt-1">Proyectos de conservación in situ de la agrobiodiversidad liderados por mujeres rurales quechuahablantes en zonas de secano degradadas.<sup>1,3</sup></p>
+                                </div>
+                                <div class="text-left sm:text-right shrink-0">
+                                    <span class="text-[9px] text-slate-500 font-bold block uppercase leading-none">Meta al 2030</span>
+                                    <span class="text-sm font-extrabold text-pink-500">15 Iniciativas</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ENFOQUE JUVENIL DESTACADO: FUNDACIÓN ECOS -->
+                        <div class="p-4 bg-gradient-to-r from-slate-950 to-emerald-950/20 rounded-xl border border-emerald-950/55 hover:border-emerald-500/40 transition-all">
+                            <div class="flex flex-col sm:flex-row justify-between items-start gap-4">
+                                <div>
+                                    <div class="flex items-center gap-1.5">
+                                        <span class="bg-emerald-950/40 text-emerald-400 text-[9px] font-bold px-2 py-0.5 rounded uppercase border border-emerald-900/20">Economía Circular / Desechos (DES2)</span>
+                                        <span class="bg-indigo-950/60 text-indigo-400 text-[9px] font-bold px-1.5 py-0.5 rounded uppercase border border-indigo-900/30 flex items-center gap-0.5"><i data-lucide="award" class="w-2.5 h-2.5"></i> Internacional</span>
+                                    </div>
+                                    <h4 class="text-sm font-extrabold text-white mt-1">Plataforma Tecnológica de Reciclaje "ECOBIT" (Fundación ECOS)</h4>
+                                    <p class="text-xs text-slate-400 mt-1">
+                                        Iniciativa tecnológica galardonada y desarrollada por jóvenes de la **Fundación ECOS** para valorizar y segregar los residuos sólidos municipales urbanos y rurales. A través de una eco-moneda digital, dinamizan la recolección en los hogares para reducir el metano de los vertederos.<sup>3</sup>
+                                    </p>
+                                </div>
+                                <div class="text-left sm:text-right shrink-0">
+                                    <span class="text-[9px] text-slate-500 font-bold block uppercase leading-none">Meta al 2030</span>
+                                    <span class="text-sm font-extrabold text-emerald-400">40 Municipios con compostaje</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Columna Derecha: Agenda COREMUCC y Fundación Ecos -->
+                <div class="lg:col-span-4 bg-gradient-to-br from-slate-900 to-pink-950/40 p-6 rounded-2xl border border-pink-950/50 flex flex-col justify-between gap-6">
+                    <div class="space-y-4">
+                        <div>
+                            <div class="flex items-center gap-2 text-pink-400">
+                                <i data-lucide="shield" class="w-6 h-6"></i>
+                                <h3 class="text-base font-bold tracking-tight uppercase">Comité Regional de Mujeres</h3>
+                            </div>
+                            <p class="text-xs text-slate-300 mt-2 leading-relaxed">
+                                Constituído en noviembre de 2024 gracias a la articulación descentralizada de lideresas campesinas procedentes de las 7 provincias de Huancavelica, el COREMUCC incide activamente en la institucionalidad pública climática.<sup>4</sup>
+                            </p>
+                        </div>
+                        
+                        <div class="space-y-3">
+                            <div class="flex items-start gap-2.5">
+                                <span class="p-1 bg-pink-950/60 text-pink-400 rounded-md mt-0.5 border border-pink-900/30"><i data-lucide="check" class="w-4 h-4"></i></span>
+                                <p class="text-xs text-slate-300 leading-relaxed"><strong class="text-white">Escuelas de Lideresas (2022-2024):</strong> Formación práctica de capacidades en adaptación agroecológica.<sup>4</sup></p>
+                            </div>
+                            <div class="flex items-start gap-2.5">
+                                <span class="p-1 bg-pink-950/60 text-pink-400 rounded-md mt-0.5 border border-pink-900/30"><i data-lucide="check" class="w-4 h-4"></i></span>
+                                <p class="text-xs text-slate-300 leading-relaxed"><strong class="text-white">Agenda de Género:</strong> Transversalizada con el apoyo de FOVIDA, Oxfam y Manos Unidas.<sup>4</sup></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SECCIÓN: JUVENTUDES Y FUNDACIÓN ECOS -->
+                    <div class="p-4 bg-slate-950 border border-emerald-950/60 rounded-xl space-y-3">
+                        <div class="flex items-center gap-2 text-emerald-400">
+                            <i data-lucide="users-2" class="w-5 h-5"></i>
+                            <h4 class="text-xs font-bold uppercase tracking-wider">Voluntariado & Juventudes</h4>
+                        </div>
+                        <p class="text-[11px] text-slate-400 leading-relaxed">
+                            Bajo la coordinación técnica de miembros de la **Fundación ECOS** (quienes integraron el equipo consultor de la ERCC, liderado por Yefry Huincho Quispe), se ha institucionalizado el programa de <strong>Promotores Ambientales Juveniles (PAJ)</strong>. Los jóvenes inciden de manera directa en la reforestación nativa, sensibilización climática comunitaria y monitoreo hidrológico regional.<sup>1,4</sup>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-slate-900 border-t border-slate-800 py-8 mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-6">
+            <div class="text-center md:text-left">
+                <p class="text-xs font-bold text-white uppercase tracking-tight flex items-center justify-center md:justify-start gap-1.5">
+                    <i data-lucide="shield" class="w-4 h-4 text-gore-crimson"></i> Gobierno Regional de Huancavelica
+                </p>
+                <p class="text-[11px] text-slate-450 mt-1">Estrategia Regional de Cambio Climático al 2050 (Actualizada en Junio 2026)</p>
+                <p class="text-[11px] text-slate-500 mt-3 flex items-center gap-1">
+                    ¹ FASE 1: Análisis de territorio | ² Emergencias climáticas 2023-2024 | ³ FASE 2: Planeamiento | ⁴ COREMUCC & Fundación ECOS | ⁵ IDH 2019
+                </p>
+            </div>
+            
+            <div class="text-center md:text-right max-w-md space-y-3">
+                <p class="text-[11px] text-slate-450 leading-relaxed">
+                    Desarrollado con el apoyo de la Cooperación Suiza COSUDE en el marco del programa <strong class="text-slate-200">Andes Resilientes al Cambio Climático</strong>, implementado por Helvetas y Fundación Avina.¹
+                </p>
+                <div class="pt-2 border-t border-slate-800 flex justify-center md:justify-end">
+                    <a href="https://drive.google.com/file/d/1Seu8CxCLDxG7-zq2KrohV0KYmuydRJkA/view?usp=sharing" target="_blank" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-950 text-slate-300 hover:bg-gore-crimson hover:text-white rounded-lg transition-all border border-slate-800 text-xs">
+                        <i data-lucide="file-text" class="w-4 h-4"></i> Documento de Referencia (Drive)
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const provinciaData = {
+            "Tayacaja": {
+                poblacion: "81,403 hab",
+                superficie: "4,193.58 km²",
+                riego: "91.5% sin riego (Secano)",
+                riegoPct: 91.5,
+                emergencias: "Sustenta la mayor reincidencia de emergencias climáticas (23.6%). Su cuenca es susceptible a inundación.²",
+                emergLluvias: "52.4%", emergHeladas: "10.2%", emergVientos: "12.8%",
+                tmax: "+3.0 a +3.2 °C", precInv: "+85%", precOto: "-25%",
+                riesgos: "Inundación por desborde en llanuras del río Mantaro y movimientos en masa frecuentes que bloquean la red vial en Salcabamba.¹",
+                mapRisk: {
+                    sequias: 'Medio',
+                    heladas: 'Alto',
+                    inundaciones: 'Muy Alto',
+                    movimientos: 'Muy Alto'
+                }
+            },
+            "Huancavelica": {
+                poblacion: "115,054 hab",
+                superficie: "1,940.96 km²",
+                riego: "98.8% sin riego (Secano)",
+                riegoPct: 98.8,
+                emergencias: "Hotspot crítico con 19.3% de las emergencias atendidas (principalmente heladas severas en zonas altas).²",
+                emergLluvias: "42.1%", emergHeladas: "22.5%", emergVientos: "8.4%",
+                tmax: "+3.2 a +3.4 °C", precInv: "+60%", precOto: "-30%",
+                riesgos: "Riesgo extremo de heladas nocturnas que afectan la seguridad alimentaria en zonas altas y lagunas glaciares en retroceso acelerado en la Cordillera Chonta.¹",
+                mapRisk: {
+                    sequias: 'Alto',
+                    heladas: 'Muy Alto',
+                    inundaciones: 'Alto',
+                    movimientos: 'Alto'
+                }
+            },
+            "Acobamba": {
+                poblacion: "38,208 hab",
+                superficie: "3,952.70 km²",
+                riego: "99.5% sin riego (Secano)",
+                riegoPct: 99.5,
+                emergencias: "Presenta el menor porcentaje de emergencias atendidas (9.4%), pero registra alta vulnerabilidad por agricultura en secano.²",
+                emergLluvias: "46.2%", emergHeladas: "12.8%", emergVientos: "10.4%",
+                tmax: "+3.4 a +3.6 °C", precInv: "+45%", precOto: "-28%",
+                riesgos: "Brecha crítica del 99.5% de tierras agrícolas sin riego formal, lo que incrementa el riesgo de estrés hídrico severo ante sequías prolongadas.³",
+                mapRisk: {
+                    sequias: 'Alto',
+                    heladas: 'Alto',
+                    inundaciones: 'Medio',
+                    movimientos: 'Medio'
+                }
+            },
+            "Angaraes": {
+                poblacion: "49,207 hab",
+                superficie: "1,204.67 km²",
+                riego: "91.5% sin riego (Secano)",
+                riegoPct: 91.5,
+                emergencias: "Registra el 12.4% de emergencias regionales. Lircay es un hotspot recurrente de inundaciones fluviales.²",
+                emergLluvias: "50.1%", emergHeladas: "11.2%", emergVientos: "9.8%",
+                tmax: "+3.2 a +3.4 °C", precInv: "+70%", precOto: "-30%",
+                riesgos: "Erosión de laderas y riesgo alto de inundación en el valle del río Lircay, dañando cultivos tradicionales de papa nativa y maíz.¹",
+                mapRisk: {
+                    sequias: 'Alto',
+                    heladas: 'Alto',
+                    inundaciones: 'Alto',
+                    movimientos: 'Alto'
+                }
+            },
+            "Castrovirreyna": {
+                poblacion: "13,982 hab",
+                superficie: "6,464.46 km²",
+                riego: "92.0% sin riego (Secano)",
+                riegoPct: 92.0,
+                emergencias: "Registra 10.9% de emergencias regionales, con alta vulnerabilidad en el sector ganadero.²",
+                emergLluvias: "40.2%", emergHeladas: "25.1%", emergVientos: "10.6%",
+                tmax: "+2.8 a +3.0 °C", precInv: "+75%", precOto: "-20%",
+                riesgos: "Remoción en masa de laderas inestables que compromete la infraestructura hídrica para el consumo agrario y de saneamiento.¹",
+                mapRisk: {
+                    sequias: 'Muy Alto',
+                    heladas: 'Muy Alto',
+                    inundaciones: 'Alto',
+                    movimientos: 'Muy Alto'
+                }
+            },
+            "Churcampa": {
+                poblacion: "32,538 hab",
+                superficie: "926.37 km²",
+                riego: "79.4% sin riego (Secano)",
+                riegoPct: 79.4,
+                emergencias: "Registra 12.2% de emergencias, con la menor brecha relativa de riego de la región.²",
+                emergLluvias: "55.2%", emergHeladas: "5.1%", emergVientos: "14.6%",
+                tmax: "+3.4 a +3.6 °C", precInv: "+40%", precOto: "-30%",
+                riesgos: "Eventos extremos de lluvia que activan quebradas y dañan la infraestructura vial y viviendas próximas a llanuras de inundación.¹",
+                mapRisk: {
+                    sequias: 'Medio',
+                    heladas: 'Medio',
+                    inundaciones: 'Alto',
+                    movimientos: 'Alto'
+                }
+            },
+            "Huaytará": {
+                poblacion: "17,247 hab",
+                superficie: "3,379.24 km²",
+                riego: "84.0% sin riego (Secano)",
+                riegoPct: 84.0,
+                emergencias: "Registra 12.2% de emergencias, principalmente en zonas de cabeceras de cuenca de la vertiente del Pacífico.²",
+                emergLluvias: "38.6%", emergHeladas: "20.2%", emergVientos: "10.6%",
+                tmax: "+3.0 a +3.2 °C", precInv: "+95%", precOto: "-25%",
+                riesgos: "Déficit hídrico permanente e incendios forestales en pastizales de puna seca que amenazan las poblaciones de camélidos sudamericanos.¹",
+                mapRisk: {
+                    sequias: 'Muy Alto',
+                    heladas: 'Muy Alto',
+                    inundaciones: 'Alto',
+                    movimientos: 'Muy Alto'
+                }
+            }
+        };
+
+        const catalogMeasures = [
+            { id: "AGRI1", type: "Adaptación", sector: "Agricultura", desc: "Implementación de buenas prácticas de fertilización de los suelos en zonas vulnerables a peligros asociados al cambio climático.", meta: "50% de productores implementando buenas prácticas al 2030.", cond: "Disponibilidad de paquetes tecnológicos y sensibilización de agricultores." },
+            { id: "AGRI10", type: "Adaptación", sector: "Agricultura", desc: "Conservación in situ y ex situ de la agrobiodiversidad para incrementar la resiliencia de los cultivos frente al cambio climático.", meta: "15 iniciativas comunitarias de revaloración de semillas nativas al 2030.", cond: "Articulación con comunidades campesinas y organizaciones indígenas." },
+            { id: "AGU2", type: "Adaptación", sector: "Agua", desc: "Implementación de intervenciones para la siembra y cosecha de agua.", meta: "100 expedientes técnicos ejecutados para construir ccochas al 2030.", cond: "Mecanismos de financiamiento para infraestructura natural." },
+            { id: "AGU24", type: "Adaptación", sector: "Agua", desc: "Conservación y recuperación de la infraestructura natural para la regulación y provisión del servicio ecosistémico hídrico.", meta: "20% de ojos de agua preservados con plantas nativas al 2030.", cond: "Estrategia de articulación multisectorial y multinivel." },
+            { id: "BOS9", type: "Adaptación", sector: "Bosques", desc: "Implementación de opciones de restauración de ecosistemas forestales para mantener la funcionalidad del paisaje.", meta: "80% de avance del paisaje forestal restaurado al 2030.", cond: "Procesos de zonificación y ordenamiento forestal regional." },
+            { id: "SAL5", type: "Adaptación", sector: "Salud", desc: "Promoción de prácticas saludables en familias vulnerables ante el incremento de exposición a temperaturas extremas.", meta: "2,500 familias vulnerables sensibilizadas en prácticas saludables al 2030.", cond: "Diseño y análisis de intervenciones con enfoque de género." },
+            { id: "PAC18", type: "Adaptación", sector: "Pesca", desc: "Fortalecimiento de capacidades de los acuicultores para la implementación de tecnologías en la cadena productiva.", meta: "80% de implementación de proyectos de restauración de ecosistemas acuícolas al 2030.", cond: "Mecanismos financieros y desarrollo tecnológico de acuicultura." },
+            { id: "AGRI1 (Mit)", type: "Mitigación", sector: "Agricultura", desc: "Manejo de los sistemas de producción pecuarios en los pastos naturales altoandinos para la reducción de GEI.", meta: "35% de implementación de planes para la reducción de GEI al 2030.", cond: "Fortalecimiento de capacidades técnicas para el uso sostenible de pastos." },
+            { id: "DES2", type: "Mitigación", sector: "Desechos", desc: "Segregación de residuos sólidos orgánicos para su valorización material en plantas de compostaje municipales.", meta: "40 gobiernos locales implementando valorización al 2030.", cond: "Estrategias comerciales para el mercado de compostaje." },
+            { id: "ECE1", type: "Mitigación", sector: "Energía", desc: "Combinación y promoción de fuentes de energías renovables (solar, minihidráulica) en el sector productivo.", meta: "15 talleres de promoción técnica sectorial al 2030.", cond: "Implementación de nuevos mecanismos de subastas RER." },
+            { id: "UTCUTS7", type: "Mitigación", sector: "UTCUTS", desc: "Plantaciones forestales con fines de protección y/o restauración utilizando especies nativas prioritarias.", meta: "3,000 Has forestadas en laderas degradadas al 2030.", cond: "Autorización de plantaciones y zonificación forestal regional." }
+        ];
+
+        let activeProvince = "Huancavelica";
+        let activeDanger = "sequias";
+
+        function switchTab(tabId) {
+            const tabs = ['resumen', 'riesgos', 'gei', 'plan', 'gobernan'];
+            tabs.forEach(t => {
+                const btn = document.getElementById(`tab-${t}`);
+                const content = document.getElementById(`content-${t}`);
+                if (t === tabId) {
+                    btn.className = "px-4 py-2.5 text-[11px] md:text-xs font-bold uppercase rounded-lg transition-all flex items-center justify-center md:justify-start gap-2 text-white bg-gore-crimson shadow-lg";
+                    content.classList.remove('hidden');
+                } else {
+                    btn.className = "px-4 py-2.5 text-[11px] md:text-xs font-bold uppercase rounded-lg transition-all flex items-center justify-center md:justify-start gap-2 text-slate-400 hover:text-white hover:bg-slate-800";
+                    content.classList.add('hidden');
+                }
+            });
+
+            if (tabId === 'gei') {
+                setTimeout(initGeiChartsAdv, 150);
+            }
+        }
+
+        const riskColors = {
+            'Bajo': '#34D399',      // Esmeralda
+            'Medio': '#FBBF24',     // Ámbar
+            'Alto': '#F97316',      // Naranja
+            'Muy Alto': '#EF4444'     // Rojo
+        };
+
+        function setMapDanger(dangerType) {
+            activeDanger = dangerType;
+            
+            const buttons = ['sequias', 'heladas', 'inundaciones', 'movimientos'];
+            buttons.forEach(b => {
+                const btn = document.getElementById(`btn-danger-${b}`);
+                if (b === dangerType) {
+                    btn.classList.add('border-gore-crimson', 'bg-gore-crimson/10', 'text-gore-crimson');
+                } else {
+                    btn.classList.remove('border-gore-crimson', 'bg-gore-crimson/10', 'text-gore-crimson');
+                }
+            });
+
+            Object.keys(provinciaData).forEach(pName => {
+                const pathId = `svg-${pName.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")}`;
+                const pathEl = document.getElementById(pathId);
+                if (pathEl) {
+                    const riskLevel = provinciaData[pName].mapRisk[dangerType];
+                    pathEl.setAttribute('fill', riskColors[riskLevel]);
+                }
+            });
+        }
+
+        function selectProvince(pName) {
+            activeProvince = pName;
+            
+            document.getElementById('panel-prov-name').innerText = pName;
+            
+            const data = provinciaData[pName];
+            document.getElementById('panel-pop-badge').innerText = `Población: ${data.poblacion}¹`;
+            document.getElementById('panel-riego-text').innerText = data.riego;
+            document.getElementById('panel-sup-text').innerText = `Área: ${data.superficie}`;
+            document.getElementById('panel-emerg-desc').innerText = data.emergencias;
+            document.getElementById('panel-emerg-lluvias').innerText = data.emergLluvias;
+            document.getElementById('panel-emerg-heladas').innerText = data.emergHeladas;
+            document.getElementById('panel-emerg-vientos').innerText = data.emergVientos;
+            document.getElementById('panel-scen-tmax').innerText = data.tmax;
+            document.getElementById('panel-scen-prec-inv').innerText = data.precInv;
+            document.getElementById('panel-scen-prec-oto').innerText = data.precOto;
+            document.getElementById('panel-risks-desc').innerText = data.riesgos;
+            document.getElementById('panel-riego-bar').style.width = `${data.riegoPct}%`;
+        }
+
+        function showOverviewImpact(nodeType) {
+            const box = document.getElementById('overview-impact-box');
+            let content = "";
+            if (nodeType === 'peligro') {
+                content = "<strong>Fase de Peligro Climático (Heladas y Sequías):</strong> Las temperaturas mínimas absolutas de hasta −11.5 °C e incursiones de masas de aire frío seco (DANAs) congelan el tejido vegetal en la zona altoandina.²";
+            } else if (nodeType === 'exposicion') {
+                content = "<strong>Fase de Exposición:</strong> El 92.6% de la superficie agrícola regional de Huancavelica se desarrolla bajo condiciones de secano, quedando expuesta directamente a déficits hídricos severos.³,¹";
+            } else if (nodeType === 'vulnerabilidad') {
+                content = "<strong>Fase de Vulnerabilidad:</strong> Al 2050, la reducida infraestructura de riego formal y elevados índices de pobreza rural limitan significativamente la capacidad de adaptación y respuesta de los hogares altoandinos.³,¹";
+            }
+            box.innerHTML = `<p class="font-bold text-white flex items-center gap-1.5"><i data-lucide="info" class="w-4 h-4 text-gore-crimson"></i> Factores de Riesgo</p><p class="mt-1 text-slate-300">${content}</p>`;
+            lucide.createIcons();
+        }
+
+        function openMeasureModal(measureId) {
+            const m = catalogMeasures.find(x => x.id === measureId);
+            if (!m) return;
+
+            document.getElementById('modal-code-title').innerText = `${m.id}`;
+            document.getElementById('modal-type-badge').innerText = m.type;
+            document.getElementById('modal-sector-text').innerText = m.sector;
+            document.getElementById('modal-desc-text').innerText = m.desc;
+            document.getElementById('modal-cond-text').innerText = m.cond;
+            document.getElementById('modal-meta-text').innerText = m.meta;
+
+            document.getElementById('measure-modal').classList.remove('hidden');
+        }
+
+        function closeMeasureModal() {
+            document.getElementById('measure-modal').classList.add('hidden');
+        }
+
+        function renderCatalogMeasures(list = catalogMeasures) {
+            const body = document.getElementById('catalog-measures-body');
+            body.innerHTML = "";
+
+            list.forEach(m => {
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-900 transition-colors border-b border-slate-850";
+                tr.innerHTML = `
+                    <td class="py-3.5 px-3 font-mono text-gore-crimson font-bold">${m.id}</td>
+                    <td class="py-3.5 px-4">
+                        <span class="px-2 py-0.5 text-[10px] font-bold rounded ${m.type === 'Adaptación' ? 'bg-emerald-950 text-emerald-400 border border-emerald-900/30' : 'bg-blue-950 text-blue-400 border border-blue-900/30'}">${m.type}</span>
+                    </td>
+                    <td class="py-3.5 px-4 font-semibold text-slate-200">${m.sector}</td>
+                    <td class="py-3.5 px-4 leading-relaxed text-slate-400 text-xs">${m.desc}</td>
+                    <td class="py-3.5 px-4 text-right">
+                        <button onclick="openMeasureModal('${m.id}')" class="p-1.5 bg-slate-950 text-slate-300 hover:bg-gore-crimson hover:text-white rounded-lg transition-all border border-slate-800">
+                            <i data-lucide="eye" class="w-4 h-4"></i>
+                        </button>
+                    </td>
+                `;
+                body.appendChild(tr);
+            });
+            lucide.createIcons();
+        }
+
+        function runCatalogFilter() {
+            const type = document.getElementById('filter-tact-type').value;
+            const sector = document.getElementById('filter-tact-sector').value;
+            const text = document.getElementById('search-tact-text').value.toLowerCase();
+
+            const filtered = catalogMeasures.filter(m => {
+                const matchType = type === 'all' || m.type === type;
+                const matchSector = sector === 'all' || m.sector === sector;
+                const matchText = m.desc.toLowerCase().includes(text) || m.id.toLowerCase().includes(text);
+                return matchType && matchSector && matchText;
+            });
+
+            renderCatalogMeasures(filtered);
+        }
+
+        function updateMitigationSimulator() {
+            const agri = parseInt(document.getElementById('slider-agri').value);
+            const des = parseInt(document.getElementById('slider-des').value);
+            const utcuts = parseInt(document.getElementById('slider-utcuts').value);
+
+            document.getElementById('slider-val-agri').innerText = `${agri}%`;
+            document.getElementById('slider-val-des').innerText = `${des}%`;
+            document.getElementById('slider-val-utcuts').innerText = `${utcuts}%`;
+
+            const baseEmissions = 1841.86;
+            const reducedEmissions = baseEmissions - ( (agri * 1.50) + (des * 0.50) + (utcuts * 4.50) );
+            
+            const textEl = document.getElementById('sim-emissions-text');
+            const tagEl = document.getElementById('sim-neutral-tag');
+
+            textEl.innerHTML = `${reducedEmissions.toFixed(2)} <span class="text-xs text-slate-400 font-medium">GgCO₂eq</span>`;
+
+            if (reducedEmissions <= 1250) {
+                tagEl.innerText = "Neutralidad Lograda";
+                tagEl.className = "text-[9px] font-extrabold uppercase px-2 py-0.5 bg-emerald-500/10 text-emerald-400 rounded-md border border-emerald-500/20";
+            } else {
+                tagEl.innerText = "Emisor Neto";
+                tagEl.className = "text-[9px] font-extrabold uppercase px-2 py-0.5 bg-rose-500/10 text-rose-400 rounded-md border border-rose-500/20";
+            }
+        }
+
+        let sectoralChart = null;
+        let agChart = null;
+
+        function initGeiChartsAdv() {
+            try {
+                if (sectoralChart) sectoralChart.destroy();
+                if (agChart) agChart.destroy();
+
+                const sectoralCtx = document.getElementById('chart-gei-sectoral-adv').getContext('2d');
+                sectoralChart = new Chart(sectoralCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Agricultura', 'UTCUTS', 'Desechos', 'Energía'],
+                        datasets: [{
+                            data: [1091.87, 634.54, 96.69, 18.76],
+                            backgroundColor: ['#E30613', '#10B981', '#F59E0B', '#3B82F6'],
+                            borderRadius: 6,
+                            borderWidth: 0
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false }
+                        },
+                        scales: {
+                            y: {
+                                grid: { color: 'rgba(255, 255, 255, 0.08)' },
+                                ticks: { color: '#94a3b8', font: { size: 9 } }
+                            },
+                            x: {
+                                grid: { display: false },
+                                ticks: { color: '#94a3b8', font: { size: 9 } }
+                            }
+                        }
+                    }
+                });
+
+                const agCtxElement = document.getElementById('chart-gei-ag-adv');
+                if (agCtxElement) {
+                    const agCtx = agCtxElement.getContext('2d');
+                    agChart = new Chart(agCtx, {
+                        type: 'doughnut',
+                        data: {
+                            labels: ['Ferm. Entérica', 'Suelos Agrícolas', 'Estiércol', 'Urea/Otros'],
+                            datasets: [{
+                                data: [594.88, 389.16, 101.35, 6.48],
+                                backgroundColor: ['#FF1A4B', '#34D399', '#FBBF24', '#60A5FA'],
+                                borderWidth: 0
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: { 
+                                    position: 'bottom', 
+                                    labels: { 
+                                        boxWidth: 8, 
+                                        color: '#94a3b8',
+                                        font: { size: 8 } 
+                                    } 
+                                }
+                            }
+                        }
+                    });
+                }
+            } catch (e) {
+                console.error("Error al inicializar los gráficos de GEI: ", e);
+            }
+        }
+
+        window.onload = function() {
+            lucide.createIcons();
+            setMapDanger('sequias');
+            selectProvince('Huancavelica');
+            renderCatalogMeasures();
+        }
+    </script>
+</body>
+</html>
