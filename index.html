@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Observatorio de la Estrategia Regional de Cambio Climático - Huancavelica 2050</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+PHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiByeD0iNyIgZmlsbD0iIzBGMTcyQSIvPjxjaXJjbGUgY3g9IjIyIiBjeT0iMTAiIHI9IjMuNCIgZmlsbD0iI0ZGMUE0QiIvPjxwYXRoIGQ9Ik0zIDI2IEwxMi41IDEwLjUgTDIyIDI2IFoiIGZpbGw9IiM4QzBCMjYiLz48cGF0aCBkPSJNMTEgMjYgTDIwIDEyLjUgTDI5IDI2IFoiIGZpbGw9IiNGRjFBNEIiLz48cGF0aCBkPSJNMTAuNCAxNC42IEwxMi41IDEwLjUgTDE0LjYgMTQuNiBaIiBmaWxsPSIjZmZmIi8+PHBhdGggZD0iTTE4IDE2LjQgTDIwIDEyLjUgTDIyIDE2LjQgWiIgZmlsbD0iI2ZmZiIvPjwvc3ZnPg==">
+    <meta name="theme-color" content="#0F172A">
+    <meta name="description" content="Observatorio de la Estrategia Regional de Cambio Climático de Huancavelica al 2050: diagnóstico de riesgos, inventario GEI y plan de acción.">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -64,28 +67,34 @@
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col antialiased selection:bg-gore-crimson selection:text-white">
 
-    <header class="bg-slate-900/90 border-b border-slate-800 sticky top-0 z-50 backdrop-blur-md">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex flex-col md:flex-row items-center justify-between gap-4">
-            <div class="flex items-center gap-3">
-                <div class="p-2.5 bg-gore-crimson/10 rounded-xl border border-gore-crimson/20 text-gore-crimson">
-                    <i data-lucide="globe" class="w-8 h-8 animate-pulse"></i>
+    <header class="bg-white/95 border-b border-slate-200 sticky top-0 z-50 backdrop-blur-md shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4">
+            <div class="flex items-center gap-3 w-full sm:w-auto">
+                <div class="shrink-0 p-2 bg-gradient-to-br from-gore-crimson/15 to-gore-dark/5 rounded-xl border border-gore-crimson/25 ring-1 ring-inset ring-slate-900/5 shadow-sm">
+                    <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 md:w-9 md:h-9" role="img" aria-label="Logo Observatorio ERCC Huancavelica">
+                        <circle cx="22" cy="9.5" r="3.5" fill="#FF1A4B"/>
+                        <path d="M1.5 27 L12.5 9 L23.5 27 Z" fill="#8C0B26"/>
+                        <path d="M10.5 27 L20 12 L30.5 27 Z" fill="#FF1A4B"/>
+                        <path d="M9.9 14.5 L12.5 9 L15.1 14.5 Z" fill="#ffffff"/>
+                        <path d="M17.4 16.4 L20 12 L22.6 16.4 Z" fill="#ffffff"/>
+                    </svg>
                 </div>
-                <div>
-                    <h1 class="text-base md:text-lg font-black tracking-tight text-white flex flex-wrap items-center gap-2">
+                <div class="min-w-0">
+                    <h1 class="text-sm sm:text-base md:text-lg font-black tracking-tight text-slate-900 flex flex-wrap items-center gap-x-2 gap-y-1 leading-tight">
                         OBSERVATORIO DE LA ERCC 2050
-                        <span class="text-[9px] font-bold px-2 py-0.5 bg-swiss-red text-white rounded-md tracking-wider">HORIZONTE 2050</span>
+                        <span class="text-[9px] font-bold px-2 py-0.5 bg-swiss-red text-white rounded-md tracking-wider whitespace-nowrap">HORIZONTE 2050</span>
                     </h1>
-                    <p class="text-[10px] md:text-[11px] text-slate-400 font-semibold tracking-wide uppercase">Estrategia Regional de Cambio Climático de Huancavelica</p>
+                    <p class="text-[10px] md:text-[11px] text-slate-500 font-semibold tracking-wide uppercase mt-0.5 truncate">Estrategia Regional de Cambio Climático de Huancavelica</p>
                 </div>
             </div>
-            
-            <div class="flex items-center justify-center bg-white p-3 rounded-2xl border border-slate-100 shadow-lg">
+
+            <div class="flex items-center justify-center w-full sm:w-auto sm:border-l sm:border-slate-200 sm:pl-4">
                 <img src="logo.png"
                      alt="Instituciones Aliadas - COSUDE, Helvetas, Avina, GORE"
-                     class="h-12 md:h-14 object-contain transition-all duration-300"
+                     class="h-9 sm:h-12 md:h-14 w-auto max-w-full object-contain transition-all duration-300"
                      onerror="this.src='https://placehold.co/600x80/ffffff/1e293b?text=Andes+Resilientes+|+COSUDE+|+Helvetas+|+Avina+|+GORE+Huancavelica'">
             </div>
-            
+
         </div>
     </header>
 
@@ -113,21 +122,29 @@
         <!-- PESTAÑA 1: VISTA GENERAL (DASHBOARD)           -->
         <!-- ============================================== -->
         <section id="content-resumen" class="tab-content space-y-6">
-            <div class="bg-gradient-to-r from-slate-900 via-slate-900 to-indigo-950 border border-slate-800 rounded-2xl p-6 relative overflow-hidden shadow-2xl">
-                <div class="absolute right-0 top-0 opacity-5 pointer-events-none transform translate-x-8 -translate-y-8">
-                    <i data-lucide="trees" class="w-96 h-96"></i>
-                </div>
+            <div class="relative overflow-hidden rounded-2xl border border-slate-800 shadow-2xl bg-slate-900 bg-gradient-to-br from-slate-900 via-slate-900 to-indigo-950 p-6 sm:p-8 lg:p-10">
+                <!-- Glow radial decorativo -->
+                <div class="absolute -top-24 -right-16 w-80 h-80 bg-gore-crimson/20 rounded-full blur-3xl pointer-events-none"></div>
+                <!-- Silueta de Andes al pie -->
+                <svg class="absolute bottom-0 right-0 w-[520px] max-w-full h-auto opacity-[0.07] pointer-events-none text-slate-100" viewBox="0 0 520 160" fill="currentColor" preserveAspectRatio="xMaxYMax meet" aria-hidden="true">
+                    <path d="M0 160 L90 60 L150 110 L230 20 L300 95 L360 45 L430 120 L520 55 L520 160 Z"/>
+                </svg>
+
                 <div class="max-w-4xl relative z-10">
-                    <span class="bg-swiss-red text-white text-[10px] font-extrabold uppercase tracking-widest px-3 py-1 rounded-md">Horizonte Estratégico 2050</span>
-                    <h2 class="text-2xl md:text-3xl font-extrabold mt-3 tracking-tight text-white">Transición hacia un Paisaje Andino Resiliente y Bajo en Carbono</h2>
-                    <p class="text-sm text-slate-300 mt-2 leading-relaxed">
-                        La Estrategia Regional de Cambio Climático (ERCC) de Huancavelica al 2050 articula el planeamiento territorial con los compromisos globales del Acuerdo de París.<sup>1</sup> Mediante la implementación sistemática de <strong>44 medidas de adaptación</strong> y <strong>13 de mitigación</strong>, la región busca salvaguardar sus ecosistemas vulnerables, su agrobiodiversidad nativa y la seguridad hídrica regional ante proyecciones de incremento de temperatura.<sup>1,2,3</sup>
+                    <span class="inline-flex items-center gap-1.5 bg-swiss-red text-white text-[10px] font-extrabold uppercase tracking-widest px-3 py-1 rounded-md shadow-sm">
+                        <span class="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></span> Horizonte Estratégico 2050
+                    </span>
+                    <h2 class="text-2xl sm:text-3xl lg:text-4xl font-extrabold mt-4 tracking-tight text-white leading-[1.15]">
+                        Transición hacia un Paisaje Andino <span class="text-transparent bg-clip-text bg-gradient-to-r from-gore-crimson to-rose-400">Resiliente y Bajo en Carbono</span>
+                    </h2>
+                    <p class="text-sm sm:text-base text-slate-300 mt-3 leading-relaxed max-w-3xl">
+                        La Estrategia Regional de Cambio Climático (ERCC) de Huancavelica al 2050 articula el planeamiento territorial con los compromisos globales del Acuerdo de París.<sup>1</sup> Mediante la implementación sistemática de <strong class="text-white">44 medidas de adaptación</strong> y <strong class="text-white">13 de mitigación</strong>, la región busca salvaguardar sus ecosistemas vulnerables, su agrobiodiversidad nativa y la seguridad hídrica regional ante proyecciones de incremento de temperatura.<sup>1,2,3</sup>
                     </p>
-                    <div class="mt-4 flex flex-wrap gap-2 text-xs">
-                        <span class="bg-slate-800 border border-slate-700 px-3 py-1.5 rounded-lg flex items-center gap-1.5 text-slate-300">
+                    <div class="mt-5 flex flex-wrap gap-2 text-xs">
+                        <span class="bg-slate-800/80 border border-slate-700 px-3 py-1.5 rounded-lg flex items-center gap-1.5 text-slate-300 backdrop-blur-sm">
                             <i data-lucide="calendar" class="w-3.5 h-3.5 text-gore-crimson"></i> Actualización de Datos: Junio 2026
                         </span>
-                        <span class="bg-slate-800 border border-slate-700 px-3 py-1.5 rounded-lg flex items-center gap-1.5 text-slate-300">
+                        <span class="bg-slate-800/80 border border-slate-700 px-3 py-1.5 rounded-lg flex items-center gap-1.5 text-slate-300 backdrop-blur-sm">
                             <i data-lucide="heart" class="w-3.5 h-3.5 text-pink-500"></i> COREMUCC Incorporado<sup>4</sup>
                         </span>
                     </div>
@@ -284,35 +301,7 @@
                     </div>
 
                     <div class="flex justify-center bg-slate-950 border border-slate-800 p-4 rounded-xl">
-                        <svg viewBox="0 0 450 500" class="w-full max-w-[320px] h-auto drop-shadow-md">
-                            <!-- Tayacaja (Norte) -->
-                            <path id="svg-tayacaja" d="M 180 30 L 280 40 L 330 90 L 340 160 L 270 170 L 230 140 L 225 180 L 170 160 Z" fill="#475569" stroke="#0F172A" stroke-width="2" class="province-path" onclick="selectProvince('Tayacaja')"/>
-                            <text x="240" y="80" fill="#FFFFFF" font-size="10" font-weight="900" pointer-events="none" class="opacity-80">TAYACAJA</text>
-
-                            <!-- Churcampa (Este-Norte) -->
-                            <path id="svg-churcampa" d="M 270 170 L 340 160 L 360 210 L 330 250 L 270 230 Z" fill="#475569" stroke="#0F172A" stroke-width="2" class="province-path" onclick="selectProvince('Churcampa')"/>
-                            <text x="290" y="200" fill="#FFFFFF" font-size="9" font-weight="900" pointer-events="none" class="opacity-80">CHURCAMPA</text>
-
-                            <!-- Huancavelica (Centro) -->
-                            <path id="svg-huancavelica" d="M 120 170 L 170 160 L 225 180 L 230 140 L 270 170 L 270 230 L 280 270 L 210 290 L 195 240 L 130 240 Z" fill="#475569" stroke="#0F172A" stroke-width="2" class="province-path" onclick="selectProvince('Huancavelica')"/>
-                            <text x="160" y="215" fill="#FFFFFF" font-size="10" font-weight="900" pointer-events="none" class="opacity-80">HUANCAVELICA</text>
-
-                            <!-- Acobamba (Este-Centro) -->
-                            <path id="svg-acobamba" d="M 270 230 L 330 250 L 350 290 L 290 310 L 280 270 Z" fill="#475569" stroke="#0F172A" stroke-width="2" class="province-path" onclick="selectProvince('Acobamba')"/>
-                            <text x="285" y="275" fill="#FFFFFF" font-size="9" font-weight="900" pointer-events="none" class="opacity-80">ACOBAMBA</text>
-
-                            <!-- Angaraes (Este-Sur) -->
-                            <path id="svg-angaraes" d="M 210 290 L 280 270 L 290 310 L 350 290 L 350 360 L 290 380 L 240 330 Z" fill="#475569" stroke="#0F172A" stroke-width="2" class="province-path" onclick="selectProvince('Angaraes')"/>
-                            <text x="260" y="335" fill="#FFFFFF" font-size="10" font-weight="900" pointer-events="none" class="opacity-80">ANGARAES</text>
-
-                            <!-- Castrovirreyna (Oeste) -->
-                            <path id="svg-castrovirreyna" d="M 120 170 L 130 240 L 195 240 L 210 290 L 240 330 L 180 340 L 155 300 L 90 300 L 60 270 L 70 220 Z" fill="#475569" stroke="#0F172A" stroke-width="2" class="province-path" onclick="selectProvince('Castrovirreyna')"/>
-                            <text x="90" y="260" fill="#FFFFFF" font-size="9" font-weight="900" pointer-events="none" class="opacity-80">CASTROVIRREYNA</text>
-
-                            <!-- Huaytará (Sur) -->
-                            <path id="svg-huaytara" d="M 90 300 L 155 300 L 180 340 L 240 330 L 290 380 L 280 440 L 210 460 L 160 410 L 120 405 Z" fill="#475569" stroke="#0F172A" stroke-width="2" class="province-path" onclick="selectProvince('Huaytará')"/>
-                            <text x="150" y="390" fill="#FFFFFF" font-size="10" font-weight="900" pointer-events="none" class="opacity-80">HUAYTARÁ</text>
-                        </svg>
+                        <svg id="hv-map" viewBox="0 0 450 500" class="w-full max-w-[320px] h-auto drop-shadow-md"></svg>
                     </div>
                 </div>
 
@@ -701,6 +690,9 @@
     </footer>
 
     <script>
+        // Provincias de Huancavelica (geojson embebido, filtrado de peru_capital_provincia.geojson)
+        const huancavelicaGeo = {"type":"FeatureCollection","features":[{"type":"Feature","properties":{"COUNT":16,"FIRST_IDPR":"0907","NOMBPROV":"TAYACAJA","FIRST_NOMB":"HUANCAVELICA","LAST_DCTO":"LEY","LAST_LEY":"11585","FIRST_FECH":"08/01/1912","LAST_FECHA":"31/01/1951","MIN_SHAPE_":336926.00538,"ha":336926.01},"geometry":{"type":"Polygon","coordinates":[[[-74.548999,-11.99699],[-74.488377,-12.033196],[-74.455536,-12.033579],[-74.41952,-12.093776],[-74.352384,-12.147765],[-74.345946,-12.173737],[-74.38886,-12.19267],[-74.38481,-12.26863],[-74.41629,-12.30477],[-74.443969,-12.271974],[-74.552117,-12.28734],[-74.581177,-12.332669],[-74.57599,-12.37317],[-74.597295,-12.410016],[-74.597332,-12.466095],[-74.692055,-12.521859],[-74.721932,-12.48748],[-74.779689,-12.46385],[-74.862975,-12.522789],[-74.943853,-12.533051],[-75.007062,-12.493227],[-75.024268,-12.434715],[-75.066695,-12.393955],[-75.13101,-12.3785],[-75.14023,-12.3421],[-75.071628,-12.235203],[-75.048327,-12.17033],[-75.074607,-12.060147],[-75.047053,-12.011564],[-74.930374,-12.022858],[-74.870774,-12.065992],[-74.837374,-12.070818],[-74.74861,-12.04142],[-74.7169,-12.05942],[-74.659108,-11.995782],[-74.548999,-11.99699]]]}},{"type":"Feature","properties":{"COUNT":19,"FIRST_IDPR":"0901","NOMBPROV":"HUANCAVELICA","FIRST_NOMB":"HUANCAVELICA","LAST_DCTO":"LEY","LAST_LEY":"9505","FIRST_FECH":"29/10/1953","LAST_FECHA":"12/01/1942","MIN_SHAPE_":419358.186721,"ha":419358.19},"geometry":{"type":"Polygon","coordinates":[[[-74.699184,-12.843643],[-74.733439,-12.879488],[-74.782937,-12.877953],[-74.827109,-12.94306],[-74.884931,-12.9263],[-74.917058,-13.096579],[-74.913258,-13.167467],[-74.955115,-13.181851],[-74.988955,-13.141519],[-75.029195,-13.105862],[-75.037031,-12.939633],[-75.057229,-12.914255],[-75.12065,-12.931835],[-75.149471,-12.960056],[-75.192082,-12.947289],[-75.24982,-12.87924],[-75.334779,-12.936174],[-75.380975,-12.842558],[-75.371309,-12.825652],[-75.442003,-12.775222],[-75.513893,-12.788652],[-75.576551,-12.715142],[-75.551818,-12.681427],[-75.579613,-12.641484],[-75.538744,-12.621694],[-75.490854,-12.647937],[-75.417854,-12.628974],[-75.362391,-12.5396],[-75.278359,-12.46783],[-75.215515,-12.463421],[-75.215254,-12.394843],[-75.13101,-12.3785],[-75.066695,-12.393955],[-75.024268,-12.434715],[-75.007062,-12.493227],[-74.943853,-12.533051],[-74.862975,-12.522789],[-74.779689,-12.46385],[-74.721932,-12.48748],[-74.692055,-12.521859],[-74.686463,-12.589855],[-74.71163,-12.634273],[-74.778727,-12.632709],[-74.767284,-12.676475],[-74.785974,-12.784107],[-74.726072,-12.84145],[-74.699184,-12.843643]]]}},{"type":"Feature","properties":{"COUNT":8,"FIRST_IDPR":"0902","NOMBPROV":"ACOBAMBA","FIRST_NOMB":"HUANCAVELICA","LAST_DCTO":"LEY","LAST_LEY":"5292","FIRST_FECH":"23/11/1925","LAST_FECHA":"23/11/1925","MIN_SHAPE_":92636.7425352,"ha":92636.74},"geometry":{"type":"Polygon","coordinates":[[[-74.32362,-12.83251],[-74.31945,-12.88728],[-74.374092,-12.935373],[-74.453176,-12.966566],[-74.475039,-12.930904],[-74.534598,-12.900158],[-74.592734,-12.894713],[-74.699184,-12.843643],[-74.726072,-12.84145],[-74.785974,-12.784107],[-74.767284,-12.676475],[-74.778727,-12.632709],[-74.71163,-12.634273],[-74.686463,-12.589855],[-74.6399,-12.645996],[-74.544428,-12.722842],[-74.542459,-12.743379],[-74.465607,-12.804887],[-74.396277,-12.806066],[-74.32362,-12.83251]]]}},{"type":"Feature","properties":{"COUNT":12,"FIRST_IDPR":"0903","NOMBPROV":"ANGARAES","FIRST_NOMB":"HUANCAVELICA","LAST_DCTO":"LEY","LAST_LEY":"9354","FIRST_FECH":"30/10/1984","LAST_FECHA":"28/02/1941","MIN_SHAPE_":194061.71484,"ha":194061.71},"geometry":{"type":"Polygon","coordinates":[[[-74.271651,-13.066972],[-74.345876,-13.025845],[-74.38623,-13.02931],[-74.40801,-13.06927],[-74.420426,-13.159539],[-74.458439,-13.190038],[-74.544473,-13.199394],[-74.570981,-13.18467],[-74.644654,-13.274137],[-74.686056,-13.286371],[-74.722124,-13.289642],[-74.721641,-13.17919],[-74.841424,-13.143723],[-74.913258,-13.167467],[-74.917058,-13.096579],[-74.884931,-12.9263],[-74.827109,-12.94306],[-74.782937,-12.877953],[-74.733439,-12.879488],[-74.699184,-12.843643],[-74.592734,-12.894713],[-74.534598,-12.900158],[-74.475039,-12.930904],[-74.453176,-12.966566],[-74.374092,-12.935373],[-74.31945,-12.88728],[-74.296553,-12.935009],[-74.271651,-13.066972]]]}},{"type":"Feature","properties":{"COUNT":13,"FIRST_IDPR":"0904","NOMBPROV":"CASTROVIRREYNA","FIRST_NOMB":"HUANCAVELICA","LAST_DCTO":"-","LAST_LEY":"-","FIRST_FECH":"06/09/1920","LAST_FECHA":"EPOCA INDEP.","MIN_SHAPE_":395269.60603,"ha":395269.61},"geometry":{"type":"Polygon","coordinates":[[[-75.614393,-12.964933],[-75.636125,-12.916175],[-75.613092,-12.866975],[-75.531082,-12.822208],[-75.513893,-12.788652],[-75.442003,-12.775222],[-75.371309,-12.825652],[-75.380975,-12.842558],[-75.334779,-12.936174],[-75.24982,-12.87924],[-75.192082,-12.947289],[-75.149471,-12.960056],[-75.12065,-12.931835],[-75.057229,-12.914255],[-75.037031,-12.939633],[-75.029195,-13.105862],[-74.988955,-13.141519],[-75.049105,-13.186556],[-75.168,-13.224512],[-75.163929,-13.273937],[-75.204167,-13.311975],[-75.205505,-13.344434],[-75.255827,-13.417472],[-75.291133,-13.401675],[-75.310348,-13.450247],[-75.434611,-13.469641],[-75.47731,-13.525484],[-75.465775,-13.43216],[-75.502916,-13.36595],[-75.538918,-13.405012],[-75.585122,-13.402668],[-75.689281,-13.43967],[-75.712163,-13.41642],[-75.805985,-13.401433],[-75.790205,-13.34251],[-75.706481,-13.288287],[-75.706337,-13.186762],[-75.693774,-13.147504],[-75.718768,-13.109765],[-75.694962,-13.074792],[-75.628608,-13.057067],[-75.614393,-12.964933]]]}},{"type":"Feature","properties":{"COUNT":10,"FIRST_IDPR":"0905","NOMBPROV":"CHURCAMPA","FIRST_NOMB":"HUANCAVELICA","LAST_DCTO":"LEY","LAST_LEY":"13841","FIRST_FECH":"22/06/1962","LAST_FECHA":"11/01/1962","MIN_SHAPE_":121798.44124,"ha":121798.44},"geometry":{"type":"Polygon","coordinates":[[[-74.32362,-12.83251],[-74.396277,-12.806066],[-74.465607,-12.804887],[-74.542459,-12.743379],[-74.544428,-12.722842],[-74.6399,-12.645996],[-74.686463,-12.589855],[-74.692055,-12.521859],[-74.597332,-12.466095],[-74.597295,-12.410016],[-74.57599,-12.37317],[-74.54843,-12.37514],[-74.50354,-12.44981],[-74.42245,-12.44521],[-74.41512,-12.49066],[-74.34082,-12.63446],[-74.32753,-12.68127],[-74.34877,-12.71243],[-74.2892,-12.75801],[-74.2924,-12.82476],[-74.32362,-12.83251]]]}},{"type":"Feature","properties":{"COUNT":16,"FIRST_IDPR":"0906","NOMBPROV":"HUAYTARA","FIRST_NOMB":"HUANCAVELICA","LAST_DCTO":"-","LAST_LEY":"-","FIRST_FECH":"26/01/1956","LAST_FECHA":"EPOCA INDEP.","MIN_SHAPE_":646453.17908,"ha":646453.18},"geometry":{"type":"Polygon","coordinates":[[[-75.05905,-14.12962],[-75.108842,-14.032885],[-75.16568,-14.07253],[-75.210555,-14.050441],[-75.232329,-14.00477],[-75.333228,-14.015984],[-75.433816,-13.9139],[-75.545502,-13.889482],[-75.563377,-13.840869],[-75.524878,-13.817899],[-75.554582,-13.749571],[-75.52944,-13.740067],[-75.484869,-13.650972],[-75.514007,-13.617092],[-75.47731,-13.525484],[-75.434611,-13.469641],[-75.310348,-13.450247],[-75.291133,-13.401675],[-75.255827,-13.417472],[-75.205505,-13.344434],[-75.204167,-13.311975],[-75.163929,-13.273937],[-75.168,-13.224512],[-75.049105,-13.186556],[-74.988955,-13.141519],[-74.955115,-13.181851],[-74.913258,-13.167467],[-74.841424,-13.143723],[-74.721641,-13.17919],[-74.722124,-13.289642],[-74.686056,-13.286371],[-74.63283,-13.34478],[-74.69946,-13.36351],[-74.763863,-13.341393],[-74.86875,-13.3599],[-74.89772,-13.39531],[-74.9021,-13.46644],[-74.86218,-13.48179],[-74.78242,-13.57851],[-74.766525,-13.772234],[-74.760364,-13.831487],[-74.785923,-13.928788],[-74.767955,-13.978552],[-74.783883,-14.016945],[-74.772529,-14.090318],[-74.841385,-14.073402],[-74.942361,-14.094687],[-75.02913,-14.07195],[-75.05905,-14.12962]]]}}]};
+
         const provinciaData = {
             "Tayacaja": {
                 poblacion: "81,403 hab",
@@ -1073,8 +1065,67 @@
             }
         }
 
+        // Dibuja el mapa provincial desde las formas reales del geojson embebido (proyeccion equirectangular).
+        function renderHuancavelicaMap() {
+            const svg = document.getElementById('hv-map');
+            if (!svg) return;
+            const NS = 'http://www.w3.org/2000/svg';
+            const nameToKey = {
+                HUANCAVELICA: 'Huancavelica', ACOBAMBA: 'Acobamba', ANGARAES: 'Angaraes',
+                CASTROVIRREYNA: 'Castrovirreyna', CHURCAMPA: 'Churcampa', HUAYTARA: 'Huaytar\u00e1', TAYACAJA: 'Tayacaja'
+            };
+            let minLon = Infinity, maxLon = -Infinity, minLat = Infinity, maxLat = -Infinity;
+            huancavelicaGeo.features.forEach(f => f.geometry.coordinates.forEach(ring => ring.forEach(([lon, lat]) => {
+                if (lon < minLon) minLon = lon; if (lon > maxLon) maxLon = lon;
+                if (lat < minLat) minLat = lat; if (lat > maxLat) maxLat = lat;
+            })));
+            const midLat = (minLat + maxLat) / 2;
+            const kx = Math.cos(midLat * Math.PI / 180); // compresion de longitud por latitud
+            const VBW = 450, VBH = 500, pad = 24;
+            const geoW = (maxLon - minLon) * kx, geoH = (maxLat - minLat);
+            const scale = Math.min((VBW - 2 * pad) / geoW, (VBH - 2 * pad) / geoH);
+            const offX = (VBW - geoW * scale) / 2, offY = (VBH - geoH * scale) / 2;
+            const proj = (lon, lat) => [offX + (lon - minLon) * kx * scale, offY + (maxLat - lat) * scale];
+
+            huancavelicaGeo.features.forEach(f => {
+                const key = nameToKey[f.properties.NOMBPROV] || f.properties.NOMBPROV;
+                const id = 'svg-' + key.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+                let d = '', cx = 0, cy = 0, n = 0;
+                f.geometry.coordinates.forEach(ring => {
+                    ring.forEach(([lon, lat], i) => {
+                        const [x, y] = proj(lon, lat);
+                        d += (i === 0 ? 'M' : 'L') + x.toFixed(1) + ' ' + y.toFixed(1) + ' ';
+                        cx += x; cy += y; n++;
+                    });
+                    d += 'Z ';
+                });
+                const path = document.createElementNS(NS, 'path');
+                path.setAttribute('id', id);
+                path.setAttribute('d', d.trim());
+                path.setAttribute('fill', '#475569');
+                path.setAttribute('stroke', '#0F172A');
+                path.setAttribute('stroke-width', '1.5');
+                path.setAttribute('class', 'province-path');
+                path.addEventListener('click', () => selectProvince(key));
+                svg.appendChild(path);
+
+                const label = document.createElementNS(NS, 'text');
+                label.setAttribute('x', (cx / n).toFixed(1));
+                label.setAttribute('y', (cy / n).toFixed(1));
+                label.setAttribute('fill', '#FFFFFF');
+                label.setAttribute('font-size', key.length > 9 ? '8' : '9');
+                label.setAttribute('font-weight', '900');
+                label.setAttribute('text-anchor', 'middle');
+                label.setAttribute('pointer-events', 'none');
+                label.setAttribute('class', 'opacity-80');
+                label.textContent = key.toUpperCase();
+                svg.appendChild(label);
+            });
+        }
+
         window.onload = function() {
             lucide.createIcons();
+            renderHuancavelicaMap();
             setMapDanger('sequias');
             selectProvince('Huancavelica');
             renderCatalogMeasures();
